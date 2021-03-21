@@ -1,4 +1,4 @@
-#  consumer example used by confluent kafka and unit tests
+#  consumer example used by confluent kafka with unit tests
 
 ## test libraries  
 ### => mockery
