@@ -13,13 +13,13 @@ import (
 	"time"
 )
 
-var _ = Describe("When first consumer", func() {
+var _ = Describe("When first consumer consume", func() {
 	var (
 		message *kafka.Message
 		err     error
 	)
 
-	Describe("And kafka message is valid", func() {
+	Context("When kafka message is valid", func() {
 		var (
 			event             eventt.TestEvent
 			consumerContainer *kafkaMocks.ConsumerContainer
@@ -47,8 +47,8 @@ var _ = Describe("When first consumer", func() {
 				Headers:        nil,
 			}
 
-			consumerContainer.On("ReadMessage", timeout).Return(&message, nil).Maybe()
-			consumerContainer.On("CommitMessage", message).Return([]kafka.TopicPartition{}, nil).Maybe()
+			consumerContainer.On("ReadMessage", timeout).Return(&message, nil).Once()
+			consumerContainer.On("CommitMessage", message).Return([]kafka.TopicPartition{}, nil).Once()
 			consumerContainer.On("Subscribe", "", mock.AnythingOfType("kafka.RebalanceCb")).Return(nil).Once()
 			consumerContainer.On("Close").Return(nil).Once()
 
@@ -63,12 +63,16 @@ var _ = Describe("When first consumer", func() {
 			Expect(err).Should(BeNil())
 		})
 
+		It("should call producer", func() {
+			Expect(producerContainer.Calls).Should(HaveLen(1))
+		})
+
 		It("should call consumer commit method", func() {
 			Expect(util.IsContain(consumerContainer.Calls, "CommitMessage")).Should(BeTrue())
 		})
 	})
 
-	Describe("And kafka message is not valid", func() {
+	Context("When kafka message is not valid", func() {
 		var (
 			consumerContainer *kafkaMocks.ConsumerContainer
 			producerContainer *kafkaMocks.ProducerContainer
@@ -89,7 +93,7 @@ var _ = Describe("When first consumer", func() {
 
 			consumerContainer.On("Subscribe", "", mock.AnythingOfType("kafka.RebalanceCb")).Return(nil).Once()
 			consumerContainer.On("Close").Return(nil).Once()
-			consumerContainer.On("CommitMessage", mock.Anything).Return([]kafka.TopicPartition{}, nil).Maybe()
+			consumerContainer.On("CommitMessage", mock.Anything).Return([]kafka.TopicPartition{}, nil).Once()
 
 			firstConsumer := InitFirstConsumer(consumerContainer, producerContainer, "")
 			err = firstConsumer.ProcessMessage(message)

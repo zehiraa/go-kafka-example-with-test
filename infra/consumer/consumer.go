@@ -39,7 +39,7 @@ func (c *firstConsumer) Consume() {
 			log.Error(fmt.Sprintf("could not read message, error: %v", err))
 			continue
 		}
-		log.Info("retrieve message")
+		log.Info("receive message")
 
 		err = c.ProcessMessage(msg)
 		if err != nil {

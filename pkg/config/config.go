@@ -17,7 +17,7 @@ func AppName() string {
 }
 
 func KafkaBroker() string {
-	return readStringFromEnv("KAFKA_BROKER", "10.1.50.121:9092")
+	return readStringFromEnv("KAFKA_BROKER", "localhost:9092")
 }
 
 func KafkaGroupID() string {
@@ -32,7 +32,7 @@ func TestEventTopicName() string {
 	return readStringFromEnv("CONSUMER_TEST_EVENT", "test-kafka-topic")
 }
 func ProduceTopicName() string {
-	return readStringFromEnv("PRODUCE_TEST_EVENT", "produce_test-kafka-topic")
+	return readStringFromEnv("PRODUCE_TEST_EVENT", "produce-test-kafka-topic")
 }
 
 func readStringFromEnv(key string, defaultValue string) string {
