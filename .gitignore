@@ -1,0 +1,6 @@
+.idea
+c.out
+coverage*
+go
+ok
+*.exe
